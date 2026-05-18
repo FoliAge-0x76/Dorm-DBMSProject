@@ -8,6 +8,12 @@
     <ProjectGuid>837066d5-8887-4ba4-aefa-63e79ad6c84c</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="SQL\schema\" />
+    <Folder Include="docs\design\er_graph\" />
+    <Folder Include="docs\requirements\" />
+    <Folder Include="docs\reports\" />
+    <Folder Include="src\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>
