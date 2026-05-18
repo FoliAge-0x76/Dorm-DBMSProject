@@ -1,0 +1,11 @@
+graph LR
+Sid(学号)---Stu
+Sna(姓名)---Stu[学生]
+Sex(性别)---Stu
+Stu--1---Apf{存储}--n----Str[物品]
+Str---INa(物品名称)
+Str---Ity(物品类型)
+Apf---SSt(存放状态)
+Apf---DeT(存放时间)
+Apf---PcT(取物时间)
+Apf---Loc(存放位置)

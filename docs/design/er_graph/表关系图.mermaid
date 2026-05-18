@@ -1,0 +1,79 @@
+erDiagram
+    Student {
+        string StudentID PK
+        string Name
+        string Gender
+        string BuildingID FK
+        string RoomID FK
+        string BedID
+        boolean IsDormLeader
+    }
+    ItemStorage {
+        string ItemID PK
+        string StudentID FK
+        string ItemName
+        string ItemType
+        string StorageLocation
+        string Status
+        datetime DepositTime
+        datetime PickupTime
+    }
+    Dormitory {
+        string RoomID PK
+        string BuildingID PK
+        int Floor
+        int StudentCount
+        string DormLeaderID FK
+    }
+
+    RepairOrder {
+        string RepairID PK
+        string StudentID FK
+        string BuildingID FK
+        string RoomID FK
+        string RepairType
+        string RepairContent
+        datetime RepairTime
+        string RepairPerson
+        decimal RepairCost
+        string RepairStatus
+    }
+
+    UtilityBill {
+        string BillID PK
+        string BuildingID FK
+        string RoomID FK
+        string BillMonth
+        decimal ElectricityFee
+        decimal WaterFee
+        decimal TotalFee
+        string PaymentStatus
+        datetime PaymentTime
+    }
+
+    HealthEvaluation {
+        string EvaluationID PK
+        string BuildingID FK
+        string RoomID FK
+        date EvaluationDate
+        int EvaluationScore
+    }
+    AccessRecord {
+        string RecordID PK
+        string VisitorName
+        string VisitorPhone
+        string StudentID FK
+        string BuildingID FK
+        string RoomID FK
+        string AccessType
+        datetime AccessTime
+        string Purpose
+    }
+    Student ||--o{ AccessRecord : 访问
+    Dormitory ||--o{ AccessRecord : 访问
+    Student ||--o{ ItemStorage : 存储
+    Student ||--o{ RepairOrder : 提交
+    Student }o--|| Dormitory : "居住"
+    Dormitory ||--o{ RepairOrder : "关联"
+    Dormitory ||--o{ UtilityBill : "产生"
+    Dormitory ||--o{ HealthEvaluation : "产生"
