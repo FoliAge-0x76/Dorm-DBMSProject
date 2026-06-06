@@ -1,3 +1,43 @@
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_AccessRecord_Dormitory')
+    ALTER TABLE AccessRecord DROP CONSTRAINT FK_AccessRecord_Dormitory;
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_HealthEvaluation_Dormitory')
+    ALTER TABLE HealthEvaluation DROP CONSTRAINT FK_HealthEvaluation_Dormitory;
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_UtilityBill_Dormitory')
+    ALTER TABLE UtilityBill DROP CONSTRAINT FK_UtilityBill_Dormitory;
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_RepairOrder_Dormitory')
+    ALTER TABLE RepairOrder DROP CONSTRAINT FK_RepairOrder_Dormitory;
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ItemStorage_Student')
+    ALTER TABLE ItemStorage DROP CONSTRAINT FK_ItemStorage_Student;
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ItemStorage_Cabinet')
+    ALTER TABLE ItemStorage DROP CONSTRAINT FK_ItemStorage_Cabinet;
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Student_Dormitory')
+    ALTER TABLE Student DROP CONSTRAINT FK_Student_Dormitory;
+
+DROP TABLE IF EXISTS AccessRecord;
+DROP TABLE IF EXISTS HealthEvaluation;
+DROP TABLE IF EXISTS UtilityBill;
+DROP TABLE IF EXISTS RepairOrder;
+DROP TABLE IF EXISTS ItemStorage;
+DROP TABLE IF EXISTS Student;
+DROP TABLE IF EXISTS StorageCabinet;
+DROP TABLE IF EXISTS Dormitory;
+
+GO
+-- ==================== 宿舍表 ====================
+CREATE TABLE Dormitory (
+    D_RoomID NVARCHAR(20) NOT NULL,
+    D_BuildingID NVARCHAR(20) NOT NULL,
+    D_Floor INT,
+    D_StudentCount INT DEFAULT 0
+    CONSTRAINT PK_Dormitory PRIMARY KEY (D_RoomID, D_BuildingID)
+);
+
 -- ==================== 学生表 ====================
 CREATE TABLE Student (
     S_StudentID NVARCHAR(20) NOT NULL,
@@ -9,15 +49,6 @@ CREATE TABLE Student (
     S_IsDormLeader BIT DEFAULT 0,
     CONSTRAINT PK_Student PRIMARY KEY (S_StudentID),
     CONSTRAINT FK_Student_Dormitory FOREIGN KEY (S_RoomID, S_BuildingID) REFERENCES Dormitory(D_RoomID, D_BuildingID)
-);
-
--- ==================== 宿舍表 ====================
-CREATE TABLE Dormitory (
-    D_RoomID NVARCHAR(20) NOT NULL,
-    D_BuildingID NVARCHAR(20) NOT NULL,
-    D_Floor INT,
-    D_StudentCount INT DEFAULT 0
-    CONSTRAINT PK_Dormitory PRIMARY KEY (D_RoomID, D_BuildingID)
 );
 
 -- ==================== 物品存储柜表 ====================
@@ -36,7 +67,7 @@ CREATE TABLE ItemStorage (
     IS_StudentID NVARCHAR(20) NOT NULL,
     IS_ItemName NVARCHAR(50) NOT NULL,
     IS_ItemType NVARCHAR(30),
-    IS_CabinetID NVARCHAR(100) NOT NULL,
+    IS_CabinetID NVARCHAR(20) NOT NULL,
     IS_Status NVARCHAR(20) NOT NULL DEFAULT '存储中',
     IS_DepositTime DATETIME NOT NULL DEFAULT GETDATE(),
     IS_PickupTime DATETIME,
@@ -95,7 +126,7 @@ CREATE TABLE AccessRecord (
     AR_BuildingID NVARCHAR(20) NOT NULL,
     AR_RoomID NVARCHAR(20) NOT NULL,
     AR_AccessType NVARCHAR(20) NOT NULL,
-    AR_AccessTime DATETIME NOT NULL DEFAULT GETDATE(),
+    AR_AccessTime DATETIME DEFAULT GETDATE(),
     AR_Purpose NVARCHAR(200),
     CONSTRAINT PK_AccessRecord PRIMARY KEY (AR_RecordID),
     CONSTRAINT FK_AccessRecord_Dormitory FOREIGN KEY (AR_RoomID, AR_BuildingID) REFERENCES Dormitory(D_RoomID, D_BuildingID),

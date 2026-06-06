@@ -1,4 +1,10 @@
 erDiagram
+    StorageCabinet {
+        string CabinetID PK
+        string BuildingID
+        string Status
+        string Remark 
+    }
     Student {
         string StudentID PK
         string Name
@@ -13,7 +19,7 @@ erDiagram
         string StudentID FK
         string ItemName
         string ItemType
-        string StorageLocation
+        string CabinetID FK
         string Status
         datetime DepositTime
         datetime PickupTime
@@ -64,6 +70,7 @@ erDiagram
         datetime AccessTime
         string Purpose
     }
+    StorageCabinet ||--o{ ItemStorage : 存储
     Dormitory ||--o{ AccessRecord : 访问
     Student ||--o{ ItemStorage : 存储
     Dormitory ||--o{ RepairOrder : 提交

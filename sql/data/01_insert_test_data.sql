@@ -9,8 +9,8 @@ DELETE FROM Dormitory;
 
 -- ==================== 宿舍数据 ====================
 INSERT INTO Dormitory (D_RoomID, D_BuildingID, D_Floor, D_StudentCount) VALUES
-('101', 'A栋', 1, 0),
-('102', 'A栋', 1, 0);
+('101', 'A栋', 1, 4),
+('102', 'A栋', 1, 2);
 
 -- ==================== 学生数据 ====================
 INSERT INTO Student (S_StudentID, S_Name, S_Gender, S_BuildingID, S_RoomID, S_BedID, S_IsDormLeader) VALUES
@@ -21,12 +21,19 @@ INSERT INTO Student (S_StudentID, S_Name, S_Gender, S_BuildingID, S_RoomID, S_Be
 ('S005', 'Nijika', '女', 'A栋', '102', '1', 1),
 ('S006', 'Ryo', '女', 'A栋', '102', '2', 0);
 
+-- ==================== StorageCabinet 测试数据 ====================
+INSERT INTO StorageCabinet (SC_CabinetID, SC_BuildingID, SC_Status, SC_Remark) VALUES
+('CAB-A-01', 'A栋', '使用中', 'A栋1楼大厅东侧，小型柜'),
+('CAB-A-02', 'A栋', '空闲', 'A栋2楼走廊，中型柜'),
+('CAB-B-01', 'B栋', '维修中', 'B栋1楼，门锁损坏'),
+('CAB-B-02', 'B栋', '已废弃', 'B栋3楼，柜体生锈');
+
 -- ==================== 物品存放数据 ====================
 INSERT INTO ItemStorage (IS_ItemID, IS_StudentID, IS_ItemName, IS_ItemType, IS_CabinetID, IS_Status, IS_DepositTime, IS_PickupTime) VALUES
-('I001', 'S001', '笔记本电脑', '电子产品', 'S-A101', NULL, '2026-01-15 10:30:00', NULL),
-('I002', 'S002', '行李箱', '生活用品', 'S-A102', '已取走', '2026-01-20 14:00:00', '2026-02-01 15:30:00'),
-('I003', 'S003', '光碟', NULL, 'S-A102', '存储中', '2026-02-10 16:20:00', NULL),
-('I004', 'S004', '书籍', NULL, 'S-A103', '逾期未取', '2025-12-01 11:00:00', NULL);
+('I001', 'S001', '笔记本电脑', '电子产品', 'CAB-A-01', '存储中', '2026-01-15 10:30:00', NULL),
+('I002', 'S002', '行李箱', '生活用品', 'CAB-A-02', '已取走', '2026-01-20 14:00:00', '2026-02-01 15:30:00'),
+('I003', 'S003', '光碟', NULL, 'CAB-A-02', '存储中', '2026-02-10 16:20:00', NULL),
+('I004', 'S004', '书籍', NULL, 'CAB-A-01', '逾期未取', '2025-12-01 11:00:00', NULL);
 
 -- ==================== 报修单数据 ====================
 INSERT INTO RepairOrder (RO_RepairID, RO_BuildingID, RO_RoomID, RO_RepairType, RO_RepairContent, RO_RepairTime, RO_RepairPerson, RO_RepairCost, RO_RepairStatus) VALUES

@@ -37,7 +37,7 @@ SELECT
     END AS PresenceStatus
 FROM StudentAccessStats A
 LEFT JOIN Dormitory D ON A.S_BuildingID = D.D_BuildingID AND A.S_RoomID = D.D_RoomID;
-
+GO
 -- 宿舍长信息视图（通过 Student 表中的 S_IsDormLeader 标识）
 CREATE VIEW V_DormLeaderInfo AS
 SELECT 
@@ -52,7 +52,7 @@ SELECT
 FROM Dormitory D
 INNER JOIN Student S ON D.D_BuildingID = S.S_BuildingID AND D.D_RoomID = S.S_RoomID
 WHERE S.S_IsDormLeader = 1;
-
+GO
 -- ==================== 物品存放相关视图 ====================
 -- 空闲柜子视图
 CREATE VIEW V_IdleCabinets AS
@@ -63,18 +63,17 @@ SELECT
     SC_Remark
 FROM StorageCabinet
 WHERE SC_Status = '空闲';
-
+GO
 -- 可用柜子视图
 CREATE VIEW V_AvailableCabinets AS
 SELECT 
     SC_CabinetID,
     SC_BuildingID,
     SC_Status,
-    SC_Remark,
-    SC_Status
+    SC_Remark
 FROM StorageCabinet
 WHERE SC_Status IN ('空闲', '使用中');
-
+GO
 -- 按楼栋统计柜子状态视图
 CREATE VIEW V_CabinetStatsByBuilding AS
 SELECT 
@@ -86,7 +85,7 @@ SELECT
     COUNT(CASE WHEN SC_Status = '已废弃' THEN 1 END) AS DiscardedCount
 FROM StorageCabinet
 GROUP BY SC_BuildingID;
-
+GO
 -- 学生物品存放明细视图
 CREATE VIEW V_StudentItemStorage AS
 SELECT 
@@ -104,7 +103,7 @@ SELECT
     DATEDIFF(DAY, IS_.IS_DepositTime, GETDATE()) AS StorageDays
 FROM Student S
 INNER JOIN ItemStorage IS_ ON S.S_StudentID = IS_.IS_StudentID;
-
+GO
 -- 未取物品清单视图（用于催取）
 CREATE VIEW V_UnclaimedItems AS
 SELECT 
@@ -112,7 +111,6 @@ SELECT
     S.S_Name,
     S.S_BuildingID,
     S.S_RoomID,
-    S.S_Phone,
     IS_.IS_ItemID,
     IS_.IS_ItemName,
     IS_.IS_ItemType,
@@ -123,7 +121,7 @@ SELECT
 FROM ItemStorage IS_
 INNER JOIN Student S ON IS_.IS_StudentID = S.S_StudentID
 WHERE IS_.IS_Status IN ('存储中', '逾期未取');
-
+GO
 -- ==================== 报修相关视图 ====================
 
 -- 报修单详细信息视图
@@ -138,15 +136,10 @@ SELECT
     RO.RO_RepairTime,
     RO.RO_RepairPerson,
     RO.RO_RepairCost,
-    RO.RO_RepairStatus,
-    DATEDIFF(DAY, RO.RO_RepairTime, GETDATE()) AS ProcessingDays,
-    CASE 
-        WHEN RO.RO_RepairStatus = '已完成' THEN DATEDIFF(DAY, RO.RO_RepairTime, ISNULL(RO.RO_CompleteTime, GETDATE()))
-        ELSE NULL
-    END AS CompletionDays
+    RO.RO_RepairStatus
 FROM RepairOrder RO
 INNER JOIN Dormitory D ON RO.RO_BuildingID = D.D_BuildingID AND RO.RO_RoomID = D.D_RoomID;
-
+GO
 -- 未完成报修单视图（待处理+处理中）
 CREATE VIEW V_PendingRepairs AS
 SELECT 
@@ -159,7 +152,7 @@ SELECT
     RO.RO_RepairStatus
 FROM RepairOrder RO
 WHERE RO.RO_RepairStatus IN ('待处理', '处理中');
-
+GO
 -- 各宿舍报修统计视图
 CREATE VIEW V_DormRepairStats AS
 SELECT 
@@ -176,7 +169,7 @@ SELECT
 FROM Dormitory D
 LEFT JOIN RepairOrder RO ON D.D_BuildingID = RO.RO_BuildingID AND D.D_RoomID = RO.RO_RoomID
 GROUP BY D.D_BuildingID, D.D_RoomID, D.D_Floor;
-
+GO
 -- ==================== 水电费相关视图 ====================
 
 -- 水电费账单明细视图
@@ -190,7 +183,7 @@ SELECT
     UB.UB_PaymentStatus,
     UB.UB_PaymentTime
 FROM UtilityBill UB;
-
+GO
 -- 未缴费账单视图（用于催缴）
 CREATE VIEW V_UnpaidBills AS
 SELECT 
@@ -206,7 +199,7 @@ SELECT
     ) AS OverdueDays
 FROM UtilityBill UB
 WHERE UB.UB_PaymentStatus IN ('未缴费', '逾期');
-
+GO
 -- 各宿舍年度费用统计视图
 CREATE VIEW V_DormAnnualCost AS
 SELECT 
@@ -220,7 +213,7 @@ SELECT
     SUM(CASE WHEN UB.UB_PaymentStatus IN ('未缴费', '逾期') THEN UB.UB_TotalFee ELSE 0 END) AS UnpaidAmount
 FROM UtilityBill UB
 GROUP BY UB.UB_BuildingID, UB.UB_RoomID, YEAR(CAST(UB.UB_BillMonth + '-01' AS DATE));
-
+GO
 -- ==================== 卫生评估相关视图 ====================
 
 -- 宿舍卫生评估历史视图
@@ -239,7 +232,7 @@ SELECT
         ELSE '不合格'
     END AS GradeLevel
 FROM HealthEvaluation HE;
-
+GO
 -- 各宿舍最新卫生评估视图
 CREATE VIEW V_DormLatestHealthScore AS
 WITH LatestEval AS (
@@ -267,7 +260,7 @@ SELECT
     END AS GradeLevel
 FROM Dormitory D
 LEFT JOIN LatestEval L ON D.D_BuildingID = L.HE_BuildingID AND D.D_RoomID = L.HE_RoomID AND L.rn = 1;
-
+GO
 -- ==================== 出入记录相关视图 ====================
 
 -- 出入记录详细信息视图
@@ -282,7 +275,7 @@ SELECT
     AR.AR_AccessTime,
     AR.AR_Purpose
 FROM AccessRecord AR;
-
+GO
 -- 每日出入统计视图
 CREATE VIEW V_DailyAccessStats AS
 SELECT 
@@ -295,7 +288,7 @@ SELECT
     COUNT(DISTINCT AR_VisitorName) AS UniqueVisitors
 FROM AccessRecord
 GROUP BY CAST(AR_AccessTime AS DATE), AR_BuildingID;
-
+GO
 -- 异常访客查询
 CREATE VIEW V_UnbalancedVisitorAccess AS
 SELECT 
@@ -319,53 +312,5 @@ WHERE AR.AR_AccessType IN ('访客来寝', '访客离开')
 GROUP BY AR.AR_BuildingID, AR.AR_RoomID, AR.AR_VisitorName, AR.AR_VisitorPhone
 HAVING COUNT(CASE WHEN AR.AR_AccessType = '访客进入' THEN 1 END) <> 
        COUNT(CASE WHEN AR.AR_AccessType = '访客离开' THEN 1 END);
-
+GO
 -- ==================== 综合统计视图 ====================
-
--- 宿舍综合信息视图（整合所有信息）
-CREATE VIEW V_DormComprehensiveInfo AS
-SELECT 
-    D.D_BuildingID,
-    D.D_RoomID,
-    D.D_Floor,
-    D.D_StudentCount,
-    S_Leader.S_Name AS DormLeaderName,
-    S_Leader.S_Phone AS DormLeaderPhone,
-    ISNULL(RepairStats.PendingCount, 0) AS PendingRepairs,
-    ISNULL(RepairStats.ProcessingCount, 0) AS ProcessingRepairs,
-    ISNULL(UnpaidBills.UnpaidCount, 0) AS UnpaidBills,
-    ISNULL(UnpaidBills.UnpaidAmount, 0) AS UnpaidAmount,
-    LatestHealth.LatestScore AS LatestHealthScore,
-    LatestHealth.GradeLevel AS HealthGrade,
-    AccessStats.TotalVisits AS TotalAccessRecords
-FROM Dormitory D
-LEFT JOIN Student S_Leader ON D.D_DormLeaderID = S_Leader.S_StudentID
-LEFT JOIN V_DormRepairStats RepairStats ON D.D_BuildingID = RepairStats.D_BuildingID AND D.D_RoomID = RepairStats.D_RoomID
-LEFT JOIN (
-    SELECT UB_BuildingID, UB_RoomID, 
-           COUNT(*) AS UnpaidCount, 
-           SUM(UB_TotalFee) AS UnpaidAmount
-    FROM UtilityBill
-    WHERE UB_PaymentStatus IN ('未缴费', '逾期')
-    GROUP BY UB_BuildingID, UB_RoomID
-) UnpaidBills ON D.D_BuildingID = UnpaidBills.UB_BuildingID AND D.D_RoomID = UnpaidBills.UB_RoomID
-LEFT JOIN V_DormLatestHealthScore LatestHealth ON D.D_BuildingID = LatestHealth.D_BuildingID AND D.D_RoomID = LatestHealth.D_RoomID
-LEFT JOIN V_DormAccessStats AccessStats ON D.D_BuildingID = AccessStats.D_BuildingID AND D.D_RoomID = AccessStats.D_RoomID;
-
--- 楼栋综合统计视图
-CREATE VIEW V_BuildingSummary AS
-SELECT 
-    D.D_BuildingID,
-    COUNT(DISTINCT D.D_RoomID) AS TotalRooms,
-    SUM(D.D_StudentCount) AS TotalStudents,
-    AVG(D.D_StudentCount) AS AvgStudentsPerRoom,
-    COUNT(DISTINCT CASE WHEN S.S_IsDormLeader = 1 THEN S.S_StudentID END) AS TotalDormLeaders,
-    SUM(CASE WHEN RO.RO_RepairStatus IN ('待处理', '处理中') THEN 1 ELSE 0 END) AS ActiveRepairs,
-    SUM(CASE WHEN UB.UB_PaymentStatus IN ('未缴费', '逾期') THEN 1 ELSE 0 END) AS UnpaidBillsCount,
-    AVG(HE.HE_EvaluationScore) AS AvgHealthScore
-FROM Dormitory D
-LEFT JOIN Student S ON D.D_BuildingID = S.S_BuildingID AND D.D_RoomID = S.S_RoomID
-LEFT JOIN RepairOrder RO ON D.D_BuildingID = RO.RO_BuildingID AND D.D_RoomID = RO.RO_RoomID
-LEFT JOIN UtilityBill UB ON D.D_BuildingID = UB.UB_BuildingID AND D.D_RoomID = UB.UB_RoomID
-LEFT JOIN HealthEvaluation HE ON D.D_BuildingID = HE.HE_BuildingID AND D.D_RoomID = HE.HE_RoomID
-GROUP BY D.D_BuildingID;
