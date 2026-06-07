@@ -286,8 +286,8 @@ SELECT
         '; '
     ) WITHIN GROUP (ORDER BY AR.AR_AccessTime) AS AccessDetail
 FROM AccessRecord AR
-WHERE AR.AR_AccessType IN ('访客来寝', '访客离开')
+WHERE AR.AR_AccessType IN ('访客来寝', '访客离寝')
 GROUP BY AR.AR_BuildingID, AR.AR_RoomID, AR.AR_VisitorName, AR.AR_VisitorPhone
-HAVING COUNT(CASE WHEN AR.AR_AccessType = '访客进入' THEN 1 END) <> 
-       COUNT(CASE WHEN AR.AR_AccessType = '访客离开' THEN 1 END);
+HAVING COUNT(CASE WHEN AR.AR_AccessType = '访客来寝' THEN 1 END) <> 
+       COUNT(CASE WHEN AR.AR_AccessType = '访客离寝' THEN 1 END);
 GO

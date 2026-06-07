@@ -51,11 +51,26 @@ GO
 SELECT * FROM V_RepairOrderDetail ORDER BY RO_RepairID;
 SELECT * FROM V_RepairOrderDetail WHERE RO_RepairStatus IN ('待处理', '处理中') ORDER BY RO_RepairID;
 SELECT * FROM V_DormRepairStats ORDER BY D_BuildingID, D_RoomID;
+GO
+
+-- 2. 触发器测试
+-- 自动填写时间
+UPDATE RepairOrder SET RO_RepairStatus = '已完成' WHERE RO_RepairID = 'R002';
+UPDATE RepairOrder SET RO_RepairStatus = '已完成' WHERE RO_RepairID = 'R003';
+SELECT * FROM V_RepairOrderDetail ORDER BY RO_RepairID;
+GO
 
 -- ==================== 模块4：水电费模块 ====================
 -- 1. 视图验证
 SELECT * FROM V_UtilityBillDetail ORDER BY UB_BillID;
 SELECT * FROM V_UnpaidBills ORDER BY OverdueDays DESC;
+GO
+
+-- 2. 触发器测试
+-- 自动填写时间
+UPDATE UtilityBill SET UB_PaymentStatus = '已缴费' WHERE UB_BillID = 'UB002';
+SELECT * FROM V_UtilityBillDetail ORDER BY UB_BillID;
+GO
 
 -- ==================== 模块5：卫生评估模块 ====================
 -- 1. 视图验证

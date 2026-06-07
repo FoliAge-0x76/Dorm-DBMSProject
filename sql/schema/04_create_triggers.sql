@@ -49,12 +49,12 @@ BEGIN
     IF EXISTS (
         SELECT S_BuildingID, S_RoomID
         FROM (
-            SELECT S_BuildingID, S_RoomID, S_IsDormLeader
+            SELECT S_BuildingID, S_RoomID, S_IsDormLeader, S_StudentID
             FROM Student
             
             UNION
             
-            SELECT I.S_BuildingID, I.S_RoomID, I.S_IsDormLeader
+            SELECT I.S_BuildingID, I.S_RoomID, I.S_IsDormLeader, I.S_StudentID
             FROM inserted I
         ) AS AllStudents
         WHERE S_IsDormLeader = 1

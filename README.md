@@ -16,7 +16,6 @@
 2. 执行 `sql/data/01_insert_test_data.sql`
 3. 运行 `tests/test_queries.sql` 验证
 ## 待办
-1. 测试查询补全（剩余一些触发器尚未有对应的验证）
 1. 审计（可选）
 1. 存储过程设计（可选）
 1. 报告补全
