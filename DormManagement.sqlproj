@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="docs\design\er_graph\" />
-    <Folder Include="docs\requirements\" />
     <Folder Include="docs\reports\" />
   </ItemGroup>
   <ItemGroup>
