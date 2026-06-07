@@ -1,6 +1,29 @@
--- ==================== 住宿相关视图 ====================
+-- ==================== 清空视图 ====================
+DECLARE @sql NVARCHAR(MAX) = '';
 
--- 学生信息视图（包含宿舍和出入信息）
+SELECT @sql = @sql + 'DROP VIEW IF EXISTS ' + QUOTENAME(name) + ';' + CHAR(13)
+FROM sys.views
+WHERE name LIKE 'V_%'  -- 删除所有以 V_ 开头的视图
+
+EXEC sp_executesql @sql;
+GO
+-- ==================== 住宿相关视图 ====================
+-- 寝室信息视图
+CREATE VIEW V_DormInfo AS
+SELECT 
+    D.D_BuildingID,
+    D.D_RoomID,
+    D.D_Floor,
+    D.D_StudentCount,
+    S.S_StudentID AS LeaderID,
+    S.S_Name AS LeaderName,
+    S.S_BedID AS LeaderBedID
+FROM Dormitory D
+LEFT JOIN Student S ON D.D_BuildingID = S.S_BuildingID 
+                   AND D.D_RoomID = S.S_RoomID
+                   AND S.S_IsDormLeader = 1;
+GO
+-- 学生信息视图
 CREATE VIEW V_StudentInfo AS
 WITH StudentAccessStats AS (
     SELECT 
@@ -38,22 +61,8 @@ SELECT
 FROM StudentAccessStats A
 LEFT JOIN Dormitory D ON A.S_BuildingID = D.D_BuildingID AND A.S_RoomID = D.D_RoomID;
 GO
--- 宿舍长信息视图（通过 Student 表中的 S_IsDormLeader 标识）
-CREATE VIEW V_DormLeaderInfo AS
-SELECT 
-    D.D_BuildingID,
-    D.D_RoomID,
-    D.D_Floor,
-    D.D_StudentCount,
-    S.S_StudentID AS LeaderID,
-    S.S_Name AS LeaderName,
-    S.S_Gender AS LeaderGender,
-    S.S_BedID AS LeaderBedID
-FROM Dormitory D
-INNER JOIN Student S ON D.D_BuildingID = S.S_BuildingID AND D.D_RoomID = S.S_RoomID
-WHERE S.S_IsDormLeader = 1;
-GO
 -- ==================== 物品存放相关视图 ====================
+-- 所有柜子视图（待办）
 -- 空闲柜子视图
 CREATE VIEW V_IdleCabinets AS
 SELECT 
@@ -130,28 +139,11 @@ SELECT
     RO.RO_RepairID,
     RO.RO_BuildingID,
     RO.RO_RoomID,
-    D.D_Floor,
-    RO.RO_RepairType,
-    RO.RO_RepairContent,
-    RO.RO_RepairTime,
-    RO.RO_RepairPerson,
-    RO.RO_RepairCost,
-    RO.RO_RepairStatus
-FROM RepairOrder RO
-INNER JOIN Dormitory D ON RO.RO_BuildingID = D.D_BuildingID AND RO.RO_RoomID = D.D_RoomID;
-GO
--- 未完成报修单视图（待处理+处理中）
-CREATE VIEW V_PendingRepairs AS
-SELECT 
-    RO.RO_RepairID,
-    RO.RO_BuildingID,
-    RO.RO_RoomID,
     RO.RO_RepairType,
     RO.RO_RepairContent,
     RO.RO_RepairTime,
     RO.RO_RepairStatus
-FROM RepairOrder RO
-WHERE RO.RO_RepairStatus IN ('待处理', '处理中');
+FROM RepairOrder RO;
 GO
 -- 各宿舍报修统计视图
 CREATE VIEW V_DormRepairStats AS
@@ -199,20 +191,6 @@ SELECT
     ) AS OverdueDays
 FROM UtilityBill UB
 WHERE UB.UB_PaymentStatus IN ('未缴费', '逾期');
-GO
--- 各宿舍年度费用统计视图
-CREATE VIEW V_DormAnnualCost AS
-SELECT 
-    UB.UB_BuildingID,
-    UB.UB_RoomID,
-    YEAR(CAST(UB.UB_BillMonth + '-01' AS DATE)) AS BillYear,
-    COUNT(*) AS MonthsCount,
-    SUM(UB.UB_TotalFee) AS TotalAnnualFee,
-    AVG(UB.UB_TotalFee) AS AvgMonthlyFee,
-    SUM(CASE WHEN UB.UB_PaymentStatus = '已缴费' THEN UB.UB_TotalFee ELSE 0 END) AS PaidAmount,
-    SUM(CASE WHEN UB.UB_PaymentStatus IN ('未缴费', '逾期') THEN UB.UB_TotalFee ELSE 0 END) AS UnpaidAmount
-FROM UtilityBill UB
-GROUP BY UB.UB_BuildingID, UB.UB_RoomID, YEAR(CAST(UB.UB_BillMonth + '-01' AS DATE));
 GO
 -- ==================== 卫生评估相关视图 ====================
 
@@ -313,4 +291,3 @@ GROUP BY AR.AR_BuildingID, AR.AR_RoomID, AR.AR_VisitorName, AR.AR_VisitorPhone
 HAVING COUNT(CASE WHEN AR.AR_AccessType = '访客进入' THEN 1 END) <> 
        COUNT(CASE WHEN AR.AR_AccessType = '访客离开' THEN 1 END);
 GO
--- ==================== 综合统计视图 ====================
