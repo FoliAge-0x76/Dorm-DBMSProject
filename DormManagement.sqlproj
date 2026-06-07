@@ -14,7 +14,6 @@
     <Folder Include="docs\design\er_graph\" />
     <Folder Include="docs\requirements\" />
     <Folder Include="docs\reports\" />
-    <Folder Include="sql\procedures\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

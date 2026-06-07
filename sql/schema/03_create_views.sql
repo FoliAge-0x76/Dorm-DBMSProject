@@ -39,6 +39,7 @@ WITH StudentAccessStats AS (
     FROM Student S
     LEFT JOIN AccessRecord AR ON S.S_BuildingID = AR.AR_BuildingID 
                               AND S.S_RoomID = AR.AR_RoomID
+                              AND S.S_StudentID = AR.AR_VisitorSID
                               AND AR.AR_AccessType IN ('学生来寝', '学生离寝')
     GROUP BY S.S_StudentID, S.S_Name, S.S_Gender, 
              S.S_BuildingID, S.S_RoomID, S.S_BedID, S.S_IsDormLeader

@@ -33,7 +33,7 @@ INSERT INTO ItemStorage (IS_ItemID, IS_StudentID, IS_ItemName, IS_ItemType, IS_C
 ('I001', 'S001', '笔记本电脑', '电子产品', 'CAB-A-01', '存储中', '2026-01-15 10:30:00', NULL),
 ('I002', 'S002', '行李箱', '生活用品', 'CAB-A-02', '已取走', '2026-01-20 14:00:00', '2026-02-01 15:30:00'),
 ('I003', 'S003', '光碟', NULL, 'CAB-A-02', '存储中', '2026-02-10 16:20:00', NULL),
-('I004', 'S004', '书籍', NULL, 'CAB-A-01', '逾期未取', '2025-12-01 11:00:00', NULL);
+('I004', 'S004', '书籍', NULL, 'CAB-A-01', '存储中', '2025-12-01 11:00:00', NULL);
 
 -- ==================== 报修单数据 ====================
 INSERT INTO RepairOrder (RO_RepairID, RO_BuildingID, RO_RoomID, RO_RepairType, RO_RepairContent, RO_RepairTime, RO_RepairPerson, RO_RepairCost, RO_RepairStatus) VALUES
@@ -57,26 +57,26 @@ INSERT INTO HealthEvaluation (HE_EvaluationID, HE_BuildingID, HE_RoomID, HE_Eval
 
 -- ==================== 出入记录数据 ====================
 -- Aoi：在寝测试（原因留空）
-INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime) VALUES
-('AR001', 'Aoi', 'A栋', '101', '学生来寝', '2026-03-01 14:00:00'),
-('AR002', 'Aoi', 'A栋', '101', '学生离寝', '2026-03-02 08:00:00'),
-('AR003', 'Aoi', 'A栋', '101', '学生来寝', '2026-03-02 18:00:00');
+INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_VisitorSID, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime) VALUES
+('AR001', 'Aoi', 'S001', 'A栋', '101', '学生来寝', '2026-03-01 14:00:00'),
+('AR002', 'Aoi', 'S001', 'A栋', '101', '学生离寝', '2026-03-02 08:00:00'),
+('AR003', 'Aoi', 'S001', 'A栋', '101', '学生来寝', '2026-03-02 18:00:00');
 
 -- Akane：离寝测试
-INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime, AR_Purpose) VALUES
-('AR004', 'Akane', 'A栋', '101', '学生来寝', '2026-02-28 19:00:00', '返校'),
-('AR005', 'Akane', 'A栋', '101', '学生离寝', '2026-03-01 08:00:00', '回家'),
-('AR006', 'Akane', 'A栋', '101', '学生来寝', '2026-03-01 17:30:00', '返校'),
-('AR007', 'Akane', 'A栋', '101', '学生离寝', '2026-03-02 07:00:00', '回家');
+INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_VisitorSID, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime, AR_Purpose) VALUES
+('AR004', 'Akane', 'S002', 'A栋', '101', '学生来寝', '2026-02-28 19:00:00', '返校'),
+('AR005', 'Akane', 'S002', 'A栋', '101', '学生离寝', '2026-03-01 08:00:00', '回家'),
+('AR006', 'Akane', 'S002', 'A栋', '101', '学生来寝', '2026-03-01 17:30:00', '返校'),
+('AR007', 'Akane', 'S002', 'A栋', '101', '学生离寝', '2026-03-02 07:00:00', '回家');
 
 -- Yukari：异常情况测试
-INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime, AR_Purpose) VALUES
-('AR008', 'Yukari', 'A栋', '101', '学生离寝', '2026-03-01 09:00:00', NULL);
+INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_VisitorSID, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime, AR_Purpose) VALUES
+('AR008', 'Yukari', 'S003', 'A栋', '101', '学生离寝', '2026-03-01 09:00:00', NULL);
 
 -- Akari：默认日期测试
-INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime, AR_Purpose) VALUES
-('AR009', 'Akari', 'A栋', '101', '学生来寝', NULL, '返校'),
-('AR010', 'Akari', 'A栋', '101', '学生离寝', NULL, '回家');
+INSERT INTO AccessRecord (AR_RecordID, AR_VisitorName, AR_VisitorSID, AR_BuildingID, AR_RoomID, AR_AccessType, AR_AccessTime, AR_Purpose) VALUES
+('AR009', 'Akari', 'S004', 'A栋', '101', '学生来寝', NULL, '返校'),
+('AR010', 'Akari', 'S004', 'A栋', '101', '学生离寝', NULL, '回家');
 
 -- 访客记录
 

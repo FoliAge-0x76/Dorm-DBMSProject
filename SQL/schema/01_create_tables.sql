@@ -123,12 +123,14 @@ CREATE TABLE AccessRecord (
     AR_RecordID NVARCHAR(20) NOT NULL,
     AR_VisitorName NVARCHAR(50) NOT NULL,
     AR_VisitorPhone NVARCHAR(20),
+    AR_VisitorSID NVARCHAR(20),
     AR_BuildingID NVARCHAR(20) NOT NULL,
     AR_RoomID NVARCHAR(20) NOT NULL,
     AR_AccessType NVARCHAR(20) NOT NULL,
     AR_AccessTime DATETIME DEFAULT GETDATE(),
     AR_Purpose NVARCHAR(200),
     CONSTRAINT PK_AccessRecord PRIMARY KEY (AR_RecordID),
+    CONSTRAINT FK_AccessRecord_SID FOREIGN KEY (AR_VisitorSID) REFERENCES Student(S_StudentID),
     CONSTRAINT FK_AccessRecord_Dormitory FOREIGN KEY (AR_RoomID, AR_BuildingID) REFERENCES Dormitory(D_RoomID, D_BuildingID),
     CONSTRAINT CK_AccessRecord_Type CHECK (AR_AccessType IN ('学生来寝', '学生离寝', '访客来寝', '访客离寝'))
 );
