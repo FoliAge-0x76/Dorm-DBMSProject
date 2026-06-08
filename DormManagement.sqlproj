@@ -8,11 +8,11 @@
     <ProjectGuid>837066d5-8887-4ba4-aefa-63e79ad6c84c</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
+    <Build Remove="docs\reports\**" />
     <Build Remove="src\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="docs\design\er_graph\" />
-    <Folder Include="docs\reports\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
